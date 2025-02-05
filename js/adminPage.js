@@ -1,33 +1,76 @@
 // Data Structure for Subjects and Students
-import {set,ref } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+import {set,ref,get } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 import {initializeConnection} from "../connection.js"
 
 // Initialize Firebase
 const {app,db}=initializeConnection();
 
-let subjects = {
-    'subCode1': {
-        name: 'Mathematics',
-        faculty: 'Dr. Alice Green',
-        password: 'math123',
-        students: ['RF123', 'RF124']
-    },
-    'subCode2': {
-        name: 'Physics',
-        faculty: 'Dr. Bob Brown',
-        password: 'phy123',
-        students: ['RF125', 'RF126']
-    }
+
+
+ //{
+//     'subCode1': {
+//         name: 'Mathematics',
+//         faculty: 'Dr. Alice Green',
+//         password: 'math123',
+//         students: ['RF123', 'RF124']
+//     },
+//     'subCode2': {
+//         name: 'Physics',
+//         faculty: 'Dr. Bob Brown',
+//         password: 'phy123',
+//         students: ['RF125', 'RF126']
+//     }
 
     
-};
+// };
 
-let students = {
-    'RF123': { name: 'John Doe', rollno: '12345', parentMail: 'john@example.com' },
-    'RF124': { name: 'Jane Doe', rollno: '12346', parentMail: 'jane@example.com' },
-    'RF125': { name: 'James Smith', rollno: '12347', parentMail: 'james@example.com' },
-    'RF126': { name: 'Emily Johnson', rollno: '12348', parentMail: 'emily@example.com' }
-};
+var students={};
+
+
+// Fetch all subjects from the database
+var subjects={};
+
+
+
+async function retrieveStudents() {
+    const dbRef = ref(db, "Students");
+    try {
+        const snapshot = await get(dbRef);
+        if (snapshot.exists()) {
+            students = snapshot.val();  // Get all subjects data
+            console.log("All students retrieved:", students);
+              // Now that subjects are fetched, display them
+        } else {
+            console.log("No students available.");
+            // Handle case when no subjects are found
+        }
+    } catch (error) {
+        console.error("Error fetching students:", error);
+    }
+}
+   
+
+async function retrieveSubjects() {
+    const dbRef = ref(db, "Subjects");
+    try {
+        const snapshot = await get(dbRef);
+        if (snapshot.exists()) {
+            subjects = snapshot.val();  // Get all subjects data
+            console.log("All subjects retrieved:", subjects);
+            displaySubjects();
+            console.log("All subjects retrieved:", subjects);
+              // Now that subjects are fetched, display them
+        } else {
+            console.log("No subjects available.");
+            // Handle case when no subjects are found
+        }
+    } catch (error) {
+        console.error("Error fetching subjects:", error);
+    }
+}
+    
+
+        
 
 
 function addSubjectToDB(subCode,subject){
@@ -230,5 +273,13 @@ document.getElementById("addStudentBtn").addEventListener("click", addStudent);
 // Initialize page by displaying subjects section
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("subjectsSection").style.display = "block"; // Show subjects section initially
-    displaySubjects(); // Display subjects
+   
+    retrieveStudents().then(function() {
+        retrieveSubjects();
+    }).catch(function(error) {
+        console.error("Error in retrieving students:", error);
+    });
+    
+    //retrieveStudents();
+    //displaySubjects(); // Display subjects
 });
