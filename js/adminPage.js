@@ -41,6 +41,16 @@ set(path, subject)
     });
 }
 
+function addStudentToDB(rfid,student){
+    const path=ref(db,"Students/"+rfid);
+    set(path, student)
+        .then(() => {
+            console.log("Data added successfully!");
+        })
+        .catch((error) => {
+            console.error("Error adding data: ", error);
+        });
+    }
 // Display the subjects in the subjects section
 function displaySubjects() {
     const container = document.getElementById("subjectsContainer");
@@ -104,6 +114,7 @@ function addSubject() {
     const subCode = document.getElementById("subCode").value;
     const subName = document.getElementById("subName").value;
     const facName = document.getElementById("facName").value;
+    const password= document.getElementById("pwd").value;
 
     // Collect selected students
     const selectedStudents = [];
@@ -115,7 +126,7 @@ function addSubject() {
     });
 
     // Create new subject and add it to the subjects object
-    subjects[subCode] = { name: subName, faculty: facName, password: '', students: selectedStudents };
+    subjects[subCode] = { name: subName, faculty: facName, password: password, students: selectedStudents };
     addSubjectToDB(subCode,subjects[subCode]);
     // Refresh the subjects list
     displaySubjects();
@@ -201,6 +212,7 @@ function addStudent() {
     // Create new student and add to the students object
     students[rfid] = { name, rollno, parentMail };
 
+    addStudentToDB(rfid,students[rfid]);
     // Refresh the students list
     displayStudents();
     hideAddStudentForm(); // Hide form
