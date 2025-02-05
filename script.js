@@ -7,6 +7,7 @@
     let errorMessage = document.getElementById("error-message");
 
     if (username === "admin" && password === "1234") {
+        sessionStorage.setItem("isLoggedIn", "true");
         alert("Login successful!");
         window.location.href = "./html/adminPage.html";
     } else {

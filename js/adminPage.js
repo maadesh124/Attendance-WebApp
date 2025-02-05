@@ -274,6 +274,12 @@ document.getElementById("addStudentBtn").addEventListener("click", addStudent);
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("subjectsSection").style.display = "block"; // Show subjects section initially
    
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    if (!isLoggedIn) {
+      window.location.href = "../index.html"; // Redirect to login page
+    }
+
+
     retrieveStudents().then(function() {
         retrieveSubjects();
     }).catch(function(error) {
