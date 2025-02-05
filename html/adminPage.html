@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="../css/adminPage.css">
+</head>
+<body>
+
+    <header>
+        <h1>Admin Dashboard</h1>
+    </header>
+
+    <!-- Dropdown to Switch Between Sections -->
+    <div class="selector-container">
+        <select id="sectionSelector">
+            <option value="subjects">Subjects</option>
+            <option value="students">Students</option>
+        </select>
+    </div>
+
+    <!-- Subjects Section -->
+    <div class="section" id="subjectsSection">
+        <h2>Subjects</h2>
+        <div class="subjects-container" id="subjectsContainer">
+            <!-- Subject Cards Will Be Added Dynamically -->
+        </div>
+
+        <!-- Add New Subject Button -->
+        <button id="addNewSubjectBtn">Add New Subject</button>
+
+        <!-- Add New Subject Form -->
+        <div id="subjectForm" style="display: none;">
+            <h3>Create New Subject</h3>
+            <label for="subCode">Subject Code:</label>
+            <input type="text" id="subCode"><br><br>
+            <label for="subName">Subject Name:</label>
+            <input type="text" id="subName"><br><br>
+            <label for="facName">Faculty Name:</label>
+            <input type="text" id="facName"><br><br>
+            <label for="students">Select Students:</label>
+            <div id="studentsCheckboxes">
+                <!-- Dynamically Loaded Students Checkboxes -->
+            </div>
+            <button id="addSubjectBtn">Add Subject</button>
+            <button id="cancelAddSubjectBtn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Students Section -->
+    <div class="section" id="studentsSection" style="display: none;">
+        <h2>Students</h2>
+        <table class="subject-table">
+            <thead>
+                <tr>
+                    <th>RFID</th>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Parent Mail</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="studentsList">
+                <!-- Students Will Be Displayed Here -->
+            </tbody>
+        </table>
+
+        <!-- Add New Student Button -->
+        <button id="addNewStudentBtn">Add New Student</button>
+
+        <!-- Add New Student Form -->
+        <div id="studentForm" style="display: none;">
+            <h3>Create New Student</h3>
+            <label for="rfid">RFID:</label>
+            <input type="text" id="rfid"><br><br>
+            <label for="name">Name:</label>
+            <input type="text" id="name"><br><br>
+            <label for="rollno">Roll No:</label>
+            <input type="text" id="rollno"><br><br>
+            <label for="mail">Parent Mail:</label>
+            <input type="email" id="mail"><br><br>
+            <button id="addStudentBtn">Add Student</button>
+            <button id="cancelAddStudentBtn">Cancel</button>
+        </div>
+    </div>
+
+    <script src="../js/adminPage.js" type="module"></script>
+
+</body>
+</html>
