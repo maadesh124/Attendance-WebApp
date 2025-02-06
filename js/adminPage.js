@@ -1,5 +1,5 @@
 // Data Structure for Subjects and Students
-import {set,ref,get } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+import {set,ref,get,remove } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 import {initializeConnection} from "../connection.js"
 
 // Initialize Firebase
@@ -57,12 +57,11 @@ async function retrieveSubjects() {
         if (snapshot.exists()) {
             subjects = snapshot.val();  // Get all subjects data
             console.log("All subjects retrieved:", subjects);
-            displaySubjects();
-            console.log("All subjects retrieved:", subjects);
-              // Now that subjects are fetched, display them
+            
+
         } else {
             console.log("No subjects available.");
-            // Handle case when no subjects are found
+
         }
     } catch (error) {
         console.error("Error fetching subjects:", error);
@@ -94,7 +93,8 @@ function addStudentToDB(rfid,student){
             console.error("Error adding data: ", error);
         });
     }
-// Display the subjects in the subjects section
+
+
 function displaySubjects() {
     const container = document.getElementById("subjectsContainer");
     container.innerHTML = ""; // Clear the container before adding subjects again
@@ -104,10 +104,17 @@ function displaySubjects() {
         const subject = subjects[subCode];
         const subjectCard = document.createElement("div");
         subjectCard.className = "subject-card";
+        
+        // Map students, skipping those not present in the students object
+        const studentNames = subject.students
+            .map(rfid => students[rfid] ? students[rfid].name : null) // Check if student exists
+            .filter(name => name !== null) // Filter out null values
+            .join(", "); // Join the names into a string
+
         subjectCard.innerHTML = `
             <h3>${subject.name}</h3>
             <p><strong>Faculty:</strong> ${subject.faculty}</p>
-            <p><strong>Students:</strong> ${subject.students.map(rfid => students[rfid].name).join(", ")}</p>
+            <p><strong>Students:</strong> ${studentNames}</p>
             <button class="delete-subject" data-subcode="${subCode}">Delete</button>
         `;
         container.appendChild(subjectCard);
@@ -229,10 +236,38 @@ function displayStudents() {
     });
 }
 
-// Delete a student from the list
-function deleteStudent(rfid) {
-    delete students[rfid];
-    displayStudents(); // Refresh student list
+
+
+async function deleteStudent(rfid) {
+    const studentRef = ref(db, "Students/"+rfid);
+    try {
+        await remove(studentRef);
+
+        if (students[rfid]) {
+            delete students[rfid];
+            console.log(`Student ${rfid} deleted locally from students object.`);
+        }
+
+            for (const subjectId in subjects) {
+                const studentsList = subjects[subjectId].students || {};
+
+                if (studentsList.includes(rfid)) {
+                    subjects[subjectId].students=studentsList.filter(id => id !== rfid);
+                        console.log('Removed student ${rfid} locally from subject ${subjectId}');
+                    const studentsInSubjectRef = ref(db, "Subjects/"+subjectId+"/students");
+                    await set(studentsInSubjectRef,subjects[subjectId].students);
+
+   
+                }
+            }
+
+            displayStudents();
+        
+
+        console.log(`Student ${rfid} deleted from the database and locally.`);
+    } catch (error) {
+        console.error("Error deleting student:", error);
+    }
 }
 
 // Show the form to add a new student
@@ -281,7 +316,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     retrieveStudents().then(function() {
-        retrieveSubjects();
+       return retrieveSubjects();
+    }).then(function () {
+        displaySubjects();
     }).catch(function(error) {
         console.error("Error in retrieving students:", error);
     });
