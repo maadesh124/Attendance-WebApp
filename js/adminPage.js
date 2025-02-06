@@ -112,7 +112,7 @@ function displaySubjects() {
             .join(", "); // Join the names into a string
 
         subjectCard.innerHTML = `
-            <h3>${subject.name}</h3>
+            <h3>${subCode}-${subject.name}</h3>
             <p><strong>Faculty:</strong> ${subject.faculty}</p>
             <p><strong>Students:</strong> ${studentNames}</p>
             <button class="delete-subject" data-subcode="${subCode}">Delete</button>
@@ -187,6 +187,7 @@ function addSubject() {
 function deleteSubject(subCode) {
     delete subjects[subCode];
     displaySubjects(); // Refresh subject list
+    remove(ref(db,"Subjects/"+subCode));
 }
 
 // Event Listeners for Switching Between Sections
@@ -255,7 +256,7 @@ async function deleteStudent(rfid) {
                     subjects[subjectId].students=studentsList.filter(id => id !== rfid);
                         console.log('Removed student ${rfid} locally from subject ${subjectId}');
                     const studentsInSubjectRef = ref(db, "Subjects/"+subjectId+"/students");
-                    await set(studentsInSubjectRef,subjects[subjectId].students);
+                    set(studentsInSubjectRef,subjects[subjectId].students);
 
    
                 }
