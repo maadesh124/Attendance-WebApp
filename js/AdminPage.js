@@ -323,7 +323,5 @@ document.addEventListener("DOMContentLoaded", function() {
     }).catch(function(error) {
         console.error("Error in retrieving students:", error);
     });
-    
-    //retrieveStudents();
-    //displaySubjects(); // Display subjects
+
 });

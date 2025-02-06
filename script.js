@@ -9,7 +9,7 @@
     if (username === "admin" && password === "1234") {
         sessionStorage.setItem("isLoggedIn", "true");
         alert("Login successful!");
-        window.location.href = "./html/adminPage.html";
+        window.location.href = "./html/AdminPage.html";
     } else {
         errorMessage.textContent = "Invalid username or password.";
     }
