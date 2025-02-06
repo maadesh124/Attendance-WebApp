@@ -1,22 +1,31 @@
 import {set,ref,get,remove } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 import {initializeConnection} from "../connection.js"
- import { subCode,subject} from "../dummydb.js";
+ //import { subCode,subject} from "../dummydb.js";
+ //import {subCode} from "./login.js"
 
 const {app,db}=initializeConnection();
 
 
 // await set(ref(db,"Attendance/2025-02-06"),attendance);
 
-// var subject={};
-// var subCode='c1';
+ var subject={};
+ var subCode;
 var students = {};
 let dayAttendance = {};
 let date = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
 console.log(date);
 
+
+
+async function getSubject(){
+    var snap=await get(ref(db,"Subjects/"+subCode)) ;
+    if(snap.exists())
+    subject=snap.val();
+    return subject;
+}
 // Function to retrieve the attendance for the day from Firebase
 async function retrieveAttendanceForDate(date) {
-    const attendanceRef = ref(db,'Attendance/' + date);
+    const attendanceRef = ref(db,'Attendance/'+subCode+'/'+ date);
 
   var snapshot= await get(attendanceRef)
         if (snapshot.exists()) {
@@ -30,7 +39,7 @@ async function retrieveAttendanceForDate(date) {
 
 // Function to save the attendance for the day to Firebase
 function saveAttendanceForDate(date, attendance) {
-    const attendanceRef = ref(db,'Attendance/' + date);
+    const attendanceRef = ref(db,'Attendance/'+subCode+'/'+ date);
     set(attendanceRef,attendance).then(() => {
         console.log("Attendance saved successfully!");
         alert("Attendance has been saved!");
@@ -49,7 +58,8 @@ async function getStudentByRfid(rfid) {
 
 
 async function getStudents(attendance) {
-
+   subject= await getSubject();
+   console.log(subject);
     for (const rfid of subject["students"]) {
         const student = await getStudentByRfid(rfid);
         if (student) {
@@ -111,9 +121,12 @@ function displayStudents() {
 
 // Add submit button functionality to save the attendance when clicked
 document.addEventListener("DOMContentLoaded", function () {
-    // Initialize the dayAttendance object when the page loads
-    
-
+   subCode =sessionStorage.getItem("subCode");
+   console.log(subCode);
+   const isLoggedIn=sessionStorage.getItem("isLoggedIn");
+    if (!isLoggedIn) {
+        window.location.href = "../html/login.html"; // Redirect to login page
+      }
     // Add submit button functionality to save the attendance when clicked
     document.getElementById("saveButton").addEventListener("click", function () {
         saveAttendanceForDate(date, dayAttendance); // Save updated attendance to Firebase

@@ -3,19 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Redirecting...</title>
+    <meta http-equiv="refresh" content="0; url=html/login.html">
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-            <p id="error-message"></p>
-        </form>
-    </div>
-    <script src="script.js" type ="module" ></script>
+    <p>If you are not redirected automatically, <a href="html/login.html">click here</a>.</p>
+    <script>
+        setTimeout(() => {
+            window.location.href = "html/login.html";
+        }, 1); // Redirect after 1 millisecond for better user experience
+    </script>
 </body>
 </html>

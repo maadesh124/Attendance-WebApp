@@ -1,6 +1,7 @@
 // Data Structure for Subjects and Students
 import {set,ref,get,remove } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 import {initializeConnection} from "../connection.js"
+//import {isLoggedIn,subCode} from "./login.js"
 
 // Initialize Firebase
 const {app,db}=initializeConnection();
@@ -312,7 +313,7 @@ document.addEventListener("DOMContentLoaded", function() {
    
     const isLoggedIn = sessionStorage.getItem("isLoggedIn");
     if (!isLoggedIn) {
-      window.location.href = "../index.html"; // Redirect to login page
+      window.location.href = "../html/login.html"; // Redirect to login page
     }
 
 
